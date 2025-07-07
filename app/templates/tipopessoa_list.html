@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerenciar Tipos de Pessoa</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="/">Sistema de Contratação</a>
+</nav>
+
+<div class="container">
+  <h2>Tipos de Pessoa</h2>
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formTipoPessoa" aria-expanded="false" aria-controls="formTipoPessoa">
+    {% if form.instance.pk %}Editar Tipo Pessoa{% else %}Cadastrar Tipo Pessoa{% endif %}
+  </button>
+
+  <div class="collapse {% if form.instance.pk %}show{% endif %}" id="formTipoPessoa">
+    <div class="card card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+          {{ form.nome.label_tag }}
+          {{ form.nome }}
+          {{ form.nome.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr><th>Nome</th></tr>
+    </thead>
+    <tbody>
+      {% for tp in tipospessoa %}
+      <tr>
+        <td>{{ tp.nome }}</td>
+        <td>
+          <a href="{% url 'tipopessoa_update' tp.pk %}" class="btn btn-sm btn-primary">Editar</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ tp.pk }}">Excluir</button>
+
+          <div class="modal fade" id="deleteModal{{ tp.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ tp.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'tipopessoa_delete' tp.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ tp.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir <strong>{{ tp.nome }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="2">Nenhum tipo cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

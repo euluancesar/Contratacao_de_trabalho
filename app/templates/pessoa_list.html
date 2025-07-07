@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerenciar Pessoas</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="/">Sistema de Contratação</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
+                </li>
+                <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
+                <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
+            </ul>
+        </div>
+</nav>
+
+<div class="container">
+
+  <h2>Pessoas</h2>
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formPessoa" aria-expanded="false" aria-controls="formPessoa">
+    {% if form.instance.pk %}Editar Pessoa{% else %}Cadastrar Pessoa{% endif %}
+  </button>
+
+  <div class="collapse {% if form.instance.pk %}show{% endif %}" id="formPessoa">
+    <div class="card card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          {{ form.nome.label_tag }} 
+          {{ form.nome }}
+          {{ form.nome.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.data_nasc.label_tag }} 
+          {{ form.data_nasc }}
+          {{ form.data_nasc.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.email.label_tag }} 
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.telefone.label_tag }} 
+          {{ form.telefone }}
+          {{ form.telefone.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.cidade.label_tag }} 
+          {{ form.cidade }}
+          {{ form.cidade.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.ocupacao.label_tag }} 
+          {{ form.ocupacao }}
+          {{ form.ocupacao.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.area_contratacao.label_tag }} 
+          {{ form.area_contratacao }}
+          {{ form.area_contratacao.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.tipo_pessoa.label_tag }} 
+          {{ form.tipo_pessoa }}
+          {{ form.tipo_pessoa.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Data de Nascimento</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pessoa in pessoas %}
+      <tr>
+        <td>{{ pessoa.nome }}</td>
+        <td>{{ pessoa.data_nasc }}</td>
+        <td>{{ pessoa.email }}</td>
+        <td>{{ pessoa.telefone }}</td>
+        <td>
+          <a href="{% url 'pessoa_update' pessoa.pk %}" class="btn btn-sm btn-primary">Editar</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ pessoa.pk }}">
+            Excluir
+          </button>
+
+          <!-- Modal de Confirmação de Exclusão -->
+          <div class="modal fade" id="deleteModal{{ pessoa.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ pessoa.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'pessoa_delete' pessoa.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ pessoa.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir <strong>{{ pessoa.nome }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">Nenhuma pessoa cadastrada.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Scripts Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

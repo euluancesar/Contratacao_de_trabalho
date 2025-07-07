@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerenciar Ocupações</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <a class="navbar-brand" href="/">Sistema de Contratação</a>
+</nav>
+
+<div class="container">
+  <h2>Ocupações</h2>
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formOcupacao" aria-expanded="false" aria-controls="formOcupacao">
+    {% if form.instance.pk %}Editar Ocupação{% else %}Cadastrar Ocupação{% endif %}
+  </button>
+
+  <div class="collapse {% if form.instance.pk %}show{% endif %}" id="formOcupacao">
+    <div class="card card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+          {{ form.nome.label_tag }}
+          {{ form.nome }}
+          {{ form.nome.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table table-striped mt-4">
+    <thead>
+      <tr><th>Nome</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      {% for o in ocupacoes %}
+      <tr>
+        <td>{{ o.nome }}</td>
+        <td>
+          <a href="{% url 'ocupacao_update' o.pk %}" class="btn btn-sm btn-primary">Editar</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ o.pk }}">Excluir</button>
+
+          <div class="modal fade" id="deleteModal{{ o.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ o.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'ocupacao_delete' o.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ o.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir <strong>{{ o.nome }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="2">Nenhuma ocupação cadastrada.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
