@@ -9,12 +9,28 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
+        </li>
+        <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
+    </ul>
+</div>
 </nav>
 
 <div class="container">
   <h2>Tipos de Pessoa</h2>
 
-  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formTipoPessoa" aria-expanded="false" aria-controls="formTipoPessoa">
+  <!-- <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formTipoPessoa" aria-expanded="false" aria-controls="formTipoPessoa">
     {% if form.instance.pk %}Editar Tipo Pessoa{% else %}Cadastrar Tipo Pessoa{% endif %}
   </button>
 
@@ -33,17 +49,17 @@
         <button type="submit" class="btn btn-primary">Salvar</button>
       </form>
     </div>
-  </div>
+  </div> -->
 
   <table class="table table-striped mt-4">
     <thead>
       <tr><th>Nome</th></tr>
     </thead>
     <tbody>
-      {% for tp in tipospessoa %}
+      {% for tp in tipos %}
       <tr>
         <td>{{ tp.nome }}</td>
-        <td>
+        <!-- <td>
           <a href="{% url 'tipopessoa_update' tp.pk %}" class="btn btn-sm btn-primary">Editar</a>
           <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ tp.pk }}">Excluir</button>
 
@@ -70,7 +86,7 @@
             </div>
           </div>
 
-        </td>
+        </td> -->
       </tr>
       {% empty %}
       <tr><td colspan="2">Nenhum tipo cadastrado.</td></tr>

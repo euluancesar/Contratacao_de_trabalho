@@ -1,4 +1,3 @@
-{# empresa_list.html #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,16 +7,69 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
+    </ul>
+  </div>
 </nav>
+
 <div class="container">
   <h2>Empresas</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-  </form>
+
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formEmpresa" aria-expanded="false" aria-controls="formEmpresa">
+    Cadastrar Empresa
+  </button>
+
+  <div class="collapse" id="formEmpresa">
+    <div class="card card-body">
+      <form method="post" action="{% url 'empresa_list' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          {{ form.nome_fantasia.label_tag }}
+          {{ form.nome_fantasia }}
+          {{ form.nome_fantasia.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.cnpj.label_tag }}
+          {{ form.cnpj }}
+          {{ form.cnpj.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.telefone.label_tag }}
+          {{ form.telefone }}
+          {{ form.telefone.errors }}
+        </div>
+        <div class="form-group">
+          {{ form.cidade.label_tag }}
+          {{ form.cidade }}
+          {{ form.cidade.errors }}
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
   <table class="table mt-4">
     <thead>
       <tr><th>Nome</th><th>CNPJ</th><th>Email</th><th>Ações</th></tr>
@@ -25,18 +77,52 @@
     <tbody>
       {% for empresa in empresas %}
       <tr>
-        <td>{{ empresa.nome }}</td>
+        <td>{{ empresa.nome_fantasia }}</td>
         <td>{{ empresa.cnpj }}</td>
         <td>{{ empresa.email }}</td>
         <td>
           <a href="{% url 'empresa_update' empresa.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <a href="{% url 'empresa_delete' empresa.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ empresa.pk }}">
+            Excluir
+          </button>
+          
+
+          <!-- Modal de Confirmação de Exclusão -->
+          <div class="modal fade" id="deleteModal{{ empresa.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ empresa.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'empresa_delete' empresa.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ empresa.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir <strong>{{ empresa.nome_fantasia }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </td>
       </tr>
-      {% empty %}<tr><td colspan="4">Nenhuma empresa cadastrada.</td></tr>
+      {% empty %}
+      <tr><td colspan="5">Nenhuma empresa cadastrada.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<!-- Scripts do Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

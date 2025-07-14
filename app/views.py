@@ -39,6 +39,10 @@ class CidadeListView(ListView):
     model = Cidade
     template_name = 'cidade_list.html'
     context_object_name = 'cidades'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CidadeForm()  # <-- Isso resolve tudo
+        return context
 
 class CidadeCreateView(CreateView):
     model = Cidade
@@ -65,6 +69,10 @@ class TipoPessoaListView(ListView):
     model = TipoPessoa
     template_name = 'tipopessoa_list.html'
     context_object_name = 'tipos'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = TipoPessoaForm()  # <-- Isso resolve tudo
+        return context
 
 class TipoPessoaCreateView(CreateView):
     model = TipoPessoa
@@ -91,6 +99,10 @@ class PessoaListView(ListView):
     model = Pessoa
     template_name = 'pessoa_list.html'
     context_object_name = 'pessoas'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = PessoaForm()  # <-- Isso resolve tudo
+        return context
 
 class PessoaCreateView(CreateView):
     model = Pessoa
@@ -120,6 +132,10 @@ class OcupacaoListView(ListView):
     model = Ocupacao
     template_name = 'ocupacao_list.html'
     context_object_name = 'ocupacoes'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = OcupacaoForm()  # <-- Isso resolve tudo
+        return context
 
 class OcupacaoCreateView(CreateView):
     model = Ocupacao
@@ -140,10 +156,16 @@ class OcupacaoDeleteView(DeleteView):
     template_name = 'ocupacao_list.html'
     success_url = reverse_lazy('ocupacao_list')
 
+
+
 class AreaContratacaoListView(ListView):
     model = AreaContratacao
     template_name = 'areacontratacao_list.html'
     context_object_name = 'areas'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = AreaContratacaoForm()  # <-- Isso resolve tudo
+        return context
 
 class AreaContratacaoCreateView(CreateView):
     model = AreaContratacao
@@ -164,10 +186,16 @@ class AreaContratacaoDeleteView(DeleteView):
     template_name = 'areacontratacao_list.html'
     success_url = reverse_lazy('areacontratacao_list')
 
+
+
 class CurriculoListView(ListView):
     model = Curriculo
     template_name = 'curriculo_list.html'
     context_object_name = 'curriculos'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CurriculoForm()  # <-- Isso resolve tudo
+        return context
 
 class CurriculoCreateView(CreateView):
     model = Curriculo
@@ -188,10 +216,32 @@ class CurriculoDeleteView(DeleteView):
     template_name = 'curriculo_list.html'
     success_url = reverse_lazy('curriculo_list')
 
+
+
+
 class EmpresaListView(ListView):
     model = Empresa
     template_name = 'empresa_list.html'
     context_object_name = 'empresas'
+    def get(self, request):
+        form = EmpresaForm()
+        empresas = Empresa.objects.all()
+        return render(request, self.template_name, {
+            'form': form,
+            'empresas': empresas,
+        })
+
+    def post(self, request):
+        form = EmpresaForm(request.POST)
+        empresas = Empresa.objects.all()
+
+        if form.is_valid():
+            form.save()
+            return redirect('empresa_create')
+        return render(request, self.template_name, {
+            'form': form,
+            'empresas': empresas,
+        })
 
 class EmpresaCreateView(CreateView):
     model = Empresa
@@ -212,10 +262,18 @@ class EmpresaDeleteView(DeleteView):
     template_name = 'empresa_list.html'
     success_url = reverse_lazy('empresa_list')
 
+
+
+
+
 class VagaListView(ListView):
     model = Vaga
     template_name = 'vaga_list.html'
     context_object_name = 'vagas'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = VagaForm()  # <-- Isso resolve tudo
+        return context
 
 class VagaCreateView(CreateView):
     model = Vaga
@@ -236,10 +294,18 @@ class VagaDeleteView(DeleteView):
     template_name = 'vaga_list.html'
     success_url = reverse_lazy('vaga_list')
 
+
+
+
+
 class CandidaturaListView(ListView):
     model = Candidatura
     template_name = 'candidatura_list.html'
     context_object_name = 'candidaturas'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CandidaturaForm()  # <-- Isso resolve tudo
+        return context
 
 class CandidaturaCreateView(CreateView):
     model = Candidatura

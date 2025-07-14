@@ -37,12 +37,12 @@
   <h2>Pessoas</h2>
 
   <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formPessoa" aria-expanded="false" aria-controls="formPessoa">
-    {% if form.instance.pk %}Editar Pessoa{% else %}Cadastrar Pessoa{% endif %}
+    Cadastrar Pessoa
   </button>
 
   <div class="collapse {% if form.instance.pk %}show{% endif %}" id="formPessoa">
     <div class="card card-body">
-      <form method="post" novalidate>
+      <form method="post" action="{% url 'pessoa_create' %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
         <div class="form-group">
@@ -109,9 +109,10 @@
         <td>{{ pessoa.telefone }}</td>
         <td>
           <a href="{% url 'pessoa_update' pessoa.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ pessoa.pk }}">
-            Excluir
-          </button>
+          <form method="post" action="{% url 'pessoa_delete' pessoa.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir</button>
+          </form>
 
           <!-- Modal de Confirmação de Exclusão -->
           <div class="modal fade" id="deleteModal{{ pessoa.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ pessoa.pk }}" aria-hidden="true">
@@ -147,7 +148,7 @@
 
 <!-- Scripts Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
