@@ -2,46 +2,106 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Gerenciar Currículos</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .custom-navbar {
+      background-color: #5461a8; 
+    }
+  </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+
+<nav class="navbar navbar-expand-lg custom-navbar mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
-        </li>
-        <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
     </ul>
-</div>
+  </div>
 </nav>
 
 <div class="container">
   <h2>Currículos</h2>
 
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-  </form>
+  <button class="btn btn-success mb-3" type="button" data-toggle="collapse" data-target="#formCurriculo" aria-expanded="false" aria-controls="formCurriculo">
+    Cadastrar Currículo
+  </button>
 
-  <table class="table table-striped mt-4">
+  <div class="collapse" id="formCurriculo">
+    <div class="card card-body">
+      <form method="post" action="{% url 'curriculo_create' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+          {{ form.pessoa.label_tag }}
+          {{ form.pessoa }}
+          {{ form.pessoa.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.link_curriculo.label_tag }}
+          {{ form.link_curriculo }}
+          {{ form.link_curriculo.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.ocupacao.label_tag }}
+          {{ form.ocupacao }}
+          {{ form.ocupacao.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.resumo.label_tag }}
+          {{ form.resumo }}
+          {{ form.resumo.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.formacao.label_tag }}
+          {{ form.formacao }}
+          {{ form.formacao.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.experiencias.label_tag }}
+          {{ form.experiencias }}
+          {{ form.experiencias.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.habilidades.label_tag }}
+          {{ form.habilidades }}
+          {{ form.habilidades.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
+  <table class="table mt-4">
     <thead>
       <tr>
         <th>Pessoa</th>
+        <th>Link do Currículo</th>
+        <th>Ocupação</th>
         <th>Resumo</th>
         <th>Formação</th>
+        <th>Experiências</th>
+        <th>Habilidades</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -49,30 +109,55 @@
       {% for curriculo in curriculos %}
       <tr>
         <td>{{ curriculo.pessoa }}</td>
-        <td>{{ curriculo.resumo }}</td>
-        <td>{{ curriculo.formacao }}</td>
+        <td><a href="{{ curriculo.link_curriculo }}" target="_blank">Ver Lattes</a></td>
+        <td>{{ curriculo.ocupacao }}</td>
+        <td>{{ curriculo.resumo|truncatewords:10 }}</td>
+        <td>{{ curriculo.formacao|truncatewords:10 }}</td>
+        <td>{{ curriculo.experiencias|truncatewords:10 }}</td>
+        <td>{{ curriculo.habilidades|truncatewords:10 }}</td>
         <td>
           <a href="{% url 'curriculo_update' curriculo.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <a href="{% url 'curriculo_delete' curriculo.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ curriculo.pk }}">
+            Excluir
+          </button>
+
+          <!-- Modal de exclusão -->
+          <div class="modal fade" id="deleteModal{{ curriculo.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ curriculo.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'curriculo_delete' curriculo.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ curriculo.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir o currículo de <strong>{{ curriculo.pessoa }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="4">Nenhum currículo cadastrado.</td></tr>
+      <tr><td colspan="8">Nenhum currículo cadastrado.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
+<!-- Scripts do Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>
-
-<!-- Repetir estrutura adaptada -->
-
-<!-- EMPRESA -->
-
-<!-- VAGA -->
-
-<!-- CANDIDATURA -->

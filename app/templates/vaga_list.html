@@ -1,4 +1,3 @@
-{# vaga_list.html #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -6,9 +5,17 @@
   <meta charset="UTF-8">
   <title>Gerenciar Vagas</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .custom-navbar {
+      background-color: #5461a8; 
+    }
+    thead {
+      background-color: #acb5e4;
+    }
+  </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg custom-navbar mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
@@ -18,25 +25,77 @@
         <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
     </ul>
-</div>
+  </div>
 </nav>
+
 <div class="container">
   <h2>Vagas</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-  </form>
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formVaga" aria-expanded="false" aria-controls="formVaga">
+    Cadastrar Vaga
+  </button>
+
+  <div class="collapse" id="formVaga">
+    <div class="card card-body">
+      <form method="post" action="{% url 'vaga_create' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+          {{ form.nome.label_tag }}
+          {{ form.nome }}
+          {{ form.nome.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.descricao.label_tag }}
+          {{ form.descricao }}
+          {{ form.descricao.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.requisitos.label_tag }}
+          {{ form.requisitos }}
+          {{ form.requisitos.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.tipo.label_tag }}
+          {{ form.tipo }}
+          {{ form.tipo.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.empresa.label_tag }}
+          {{ form.empresa }}
+          {{ form.empresa.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.area_contratacao.label_tag }}
+          {{ form.area_contratacao }}
+          {{ form.area_contratacao.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
   <table class="table mt-4">
     <thead>
-      <tr><th>Nome</th><th>Tipo</th><th>Empresa</th><th>Ações</th></tr>
+      <tr>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th>Empresa</th>
+        <th>Ações</th>
+      </tr>
     </thead>
     <tbody>
       {% for vaga in vagas %}
@@ -46,13 +105,47 @@
         <td>{{ vaga.empresa }}</td>
         <td>
           <a href="{% url 'vaga_update' vaga.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <a href="{% url 'vaga_delete' vaga.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ vaga.pk }}">
+            Excluir
+          </button>
+
+          <!-- Modal de confirmação de exclusão -->
+          <div class="modal fade" id="deleteModal{{ vaga.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ vaga.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'vaga_delete' vaga.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ vaga.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir a vaga <strong>{{ vaga.nome }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
         </td>
       </tr>
-      {% empty %}<tr><td colspan="4">Nenhuma vaga cadastrada.</td></tr>
+      {% empty %}
+      <tr><td colspan="4">Nenhuma vaga cadastrada.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<!-- Scripts do Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

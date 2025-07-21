@@ -1,4 +1,3 @@
-{# candidatura_list.html #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -6,53 +5,130 @@
   <meta charset="UTF-8">
   <title>Gerenciar Candidaturas</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .custom-navbar {
+      background-color: #5461a8; 
+    }
+    thead {
+      background-color: #acb5e4;
+    }
+  </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg custom-navbar mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
-        </li>
-        <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/pessoa/">Candidatos</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/empresa/">Empresa</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
+      <li class="nav-item"><a class="nav-link text-light" href="/admin/">Admin</a></li>
     </ul>
-</div>
+  </div>
 </nav>
+
 <div class="container">
   <h2>Candidaturas</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Salvar</button>
-  </form>
+
+  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formCandidatura" aria-expanded="false" aria-controls="formCandidatura">
+    Cadastrar Candidatura
+  </button>
+
+  <div class="collapse" id="formCandidatura">
+    <div class="card card-body">
+      <form method="post" action="{% url 'candidatura_create' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+          {{ form.pessoa.label_tag }}
+          {{ form.pessoa }}
+          {{ form.pessoa.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.vaga.label_tag }}
+          {{ form.vaga }}
+          {{ form.vaga.errors }}
+        </div>
+
+        <div class="form-group">
+          {{ form.status.label_tag }}
+          {{ form.status }}
+          {{ form.status.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+  </div>
+
   <table class="table mt-4">
     <thead>
-      <tr><th>Pessoa</th><th>Vaga</th><th>Status</th><th>Ações</th></tr>
+      <tr>
+        <th>Candidato</th>
+        <th>Vaga</th>
+        <th>Data da Candidatura</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
     </thead>
     <tbody>
       {% for candidatura in candidaturas %}
       <tr>
         <td>{{ candidatura.pessoa }}</td>
         <td>{{ candidatura.vaga }}</td>
+        <td>{{ candidatura.data_candidatura|date:"d/m/Y" }}</td>
         <td>{{ candidatura.status }}</td>
         <td>
           <a href="{% url 'candidatura_update' candidatura.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <a href="{% url 'candidatura_delete' candidatura.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ candidatura.pk }}">
+            Excluir
+          </button>
+
+          <!-- Modal de confirmação de exclusão -->
+          <div class="modal fade" id="deleteModal{{ candidatura.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ candidatura.pk }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <form method="post" action="{% url 'candidatura_delete' candidatura.pk %}">
+                  {% csrf_token %}
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ candidatura.pk }}">Confirmar exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir a candidatura de <strong>{{ candidatura.pessoa }}</strong> para a vaga <strong>{{ candidatura.vaga }}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
         </td>
       </tr>
-      {% empty %}<tr><td colspan="4">Nenhuma candidatura cadastrada.</td></tr>
+      {% empty %}
+      <tr><td colspan="5">Nenhuma candidatura cadastrada.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

@@ -7,12 +7,40 @@
     <title>Sistema Gerenciador de Contratação de Trabalho - Página Inicial</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url(''); /* Troque pelo link da imagem */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    
+        .jumbotron {
+            background-color: rgba(172, 204, 235, 0.85);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .custom-navbar {
+            background-color: #5461a8; 
+        }
+
+        .btn-lg:hover{
+            background-color: #5461a8;
+        }
+        .btn-lg{
+            background-color: #8d99dd;
+        }
+
+
+    </style>
+    
 </head>
 
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
         <a class="navbar-brand" href="/">ConectaVagas</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +72,7 @@
             <p class="lead">Conectando talentos com oportunidades</p>
             <hr class="my-4">
             <p>Encontre vagas de estágio ou emprego de acordo com sua área de atuação</p>
-            <a class="btn btn-success btn-lg" href="/vaga/" role="button">Explorar Vagas</a>
+            <a class="btn btn-lg" href="/vaga/" role="button">Explorar Vagas</a>
         </div>
     </div>
 

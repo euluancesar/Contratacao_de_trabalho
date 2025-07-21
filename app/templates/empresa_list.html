@@ -5,10 +5,15 @@
   <meta charset="UTF-8">
   <title>Gerenciar Empresas</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .custom-navbar {
+            background-color: #5461a8; 
+        }
+  </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg custom-navbar mb-4">
   <a class="navbar-brand" href="/">Sistema de Contratação</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
@@ -37,7 +42,7 @@
 
   <div class="collapse" id="formEmpresa">
     <div class="card card-body">
-      <form method="post" action="{% url 'empresa_list' %}">
+      <form method="post" action="{% url 'empresa_create' %}">
         {% csrf_token %}
         {{ form.non_field_errors }}
         <div class="form-group">
@@ -65,6 +70,11 @@
           {{ form.cidade }}
           {{ form.cidade.errors }}
         </div>
+        <div class="form-group">
+          {{ form.tipo_pessoa.label_tag }}
+          {{ form.tipo_pessoa }}
+          {{ form.tipo_pessoa.errors }}
+        </div>
         <button type="submit" class="btn btn-primary">Salvar</button>
       </form>
     </div>
@@ -82,7 +92,7 @@
         <td>{{ empresa.email }}</td>
         <td>
           <a href="{% url 'empresa_update' empresa.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ empresa.pk }}">
+          <button type="button" href="{% url 'empresa_delete' empresa.pk %}" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ empresa.pk }}">
             Excluir
           </button>
           
