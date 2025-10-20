@@ -8,12 +8,15 @@
   <style>
     .custom-navbar {
             background-color: #5461a8; 
-        }
+    }
+    .btn-lg{
+      background-color: #8d99dd;
+    }
   </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg custom-navbar mb-4">
-  <a class="navbar-brand" href="/">Sistema de Contratação</a>
+  <a style="color: white;" class="navbar-brand" href="/">ConectaVagas</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
         <li class="nav-item"><a class="nav-link text-light" href="/">Home</a></li>
@@ -22,8 +25,7 @@
         <li class="nav-item"><a class="nav-link text-light" href="/cidade/">Cidade</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/tipopessoa/">Tipo de Pessoa</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/ocupacao/">Ocupação</a></li>
-        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a>
-        </li>
+        <li class="nav-item"><a class="nav-link text-light" href="/areacontratacao/">Área de Contratação</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/curriculo/">Currículo</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/vaga/">Vaga</a></li>
         <li class="nav-item"><a class="nav-link text-light" href="/candidatura/">Candidatura</a></li>
@@ -35,36 +37,9 @@
 <div class="container">
   <h2>Cidades</h2>
 
-  <button type="button" class="btn btn-success mb-3" data-toggle="collapse" data-target="#formCidade" aria-expanded="false" aria-controls="formCidade">
-    {% if form.instance.pk %}Editar Cidade{% else %}Cadastrar Cidade{% endif %}
-  </button>
-
-  <div class="collapse {% if form.instance.pk %}show{% endif %}" id="formCidade">
-    <div class="card card-body">
-      <form method="post" action="{% url 'cidade_create' %}">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-
-        <div class="form-group">
-          {{ form.nome.label_tag }}
-          {{ form.nome }}
-          {{ form.nome.errors }}
-        </div>
-
-        <div class="form-group">
-          {{ form.uf.label_tag }}
-          {{ form.uf }}
-          {{ form.uf.errors }}
-        </div>
-
-        <button type="submit" class="btn btn-primary">Salvar</button>
-      </form>
-    </div>
-  </div>
-
   <table class="table table-striped mt-4">
     <thead>
-      <tr><th>Nome</th><th>UF</th><th>Ações</th></tr>
+      <tr><th>Nome</th><th>UF</th></tr>
     </thead>
     <tbody>
       {% for cidade in cidades %}
@@ -72,31 +47,7 @@
         <td>{{ cidade.nome }}</td>
         <td>{{ cidade.uf }}</td>
         <td>
-          <a href="{% url 'cidade_update' cidade.pk %}" class="btn btn-sm btn-primary">Editar</a>
-          <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal{{ cidade.pk }}">Excluir</button>
-
-          <div class="modal fade" id="deleteModal{{ cidade.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ cidade.pk }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <form method="post" action="{% url 'cidade_delete' cidade.pk %}">
-                  {% csrf_token %}
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel{{ cidade.pk }}">Confirmar exclusão</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    Tem certeza que deseja excluir <strong>{{ cidade.nome }}</strong>?
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+          
 
         </td>
       </tr>
